@@ -74,7 +74,7 @@ export function assertSchema(
 
 export function assertSchemas(
     group: string,
-    type: string,
+    types: string[] | "*",
     settings: TJS.PartialArgs = {},
     compilerOptions?: TJS.CompilerOptions
 ) {
@@ -83,18 +83,20 @@ export function assertSchemas(
             settings.required = true;
         }
 
+        const files = [BASE + group + "/main.ts"];
+        const program = TJS.getProgramFromFiles(files, compilerOptions);
         const generator = TJS.buildGenerator(
-            TJS.getProgramFromFiles([resolve(BASE + group + "/main.ts")], compilerOptions),
+            program,
             settings
         );
-        const symbols = generator!.getSymbols(type);
+        const symbolsNames = types === "*" ? generator!.getMainFileSymbols(program) : types;
 
-        for (let symbol of symbols) {
-            const actual = generator!.getSchemaForSymbol(symbol.name);
+        for (let symbolName of symbolsNames) {
+            const actual = generator!.getSchemaForSymbol(symbolName);
 
             // writeFileSync(BASE + group + `/schema.${symbol.name}.json`, JSON.stringify(actual, null, 4) + "\n\n");
 
-            const file = readFileSync(BASE + group + `/schema.${symbol.name}.json`, "utf8");
+            const file = readFileSync(BASE + group + `/schema.${symbolName}.json`, "utf8");
             const expected = JSON.parse(file);
 
             assert.isObject(actual);
@@ -319,6 +321,7 @@ describe("schema", () => {
         // assertSchema("type-function", "MyObject");
         assertSchema("any-unknown", "MyObject");
         assertSchema("never", "Never");
+        assertSchemas("type-symbol", "*");
     });
 
     describe("class and interface", () => {
@@ -379,7 +382,7 @@ describe("schema", () => {
     });
 
     describe("uniqueNames", () => {
-        assertSchemas("unique-names", "MyObject", {
+        assertSchema("unique-names", "MyObject", {
             uniqueNames: true,
         });
 
@@ -415,11 +418,11 @@ describe("schema", () => {
 
         assertSchema("user-symbols", "*");
 
-        assertSchemas("argument-id", "MyObject", {
+        assertSchema("argument-id", "MyObject", {
             id: "someSchemaId",
         });
 
-        assertSchemas("type-default-number-as-integer", "*", {
+        assertSchema("type-default-number-as-integer", "MyObject", {
             defaultNumberType: "integer",
         });
 
