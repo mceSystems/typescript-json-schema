@@ -1280,6 +1280,26 @@ export class ObjectId {}
 ```
 
 
+## [C:\dev\mce\typescript-json-schema\test\programs\satisfies-keyword\main.ts](./test/programs/C:\dev\mce\typescript-json-schema\test\programs\satisfies-keyword\main.ts)
+
+```ts
+interface Basic {
+    a: string;
+    b: number;
+    c: boolean;
+}
+
+const myObject = {
+    a: "a" as const,
+    b: 1 as const,
+    c: true as const,
+// tslint:disable-next-line:variable-name
+} satisfies Basic;
+
+export type Specific = typeof myObject;
+```
+
+
 ## [C:\dev\mce\typescript-json-schema\test\programs\strict-null-checks\main.ts](./test/programs/C:\dev\mce\typescript-json-schema\test\programs\strict-null-checks\main.ts)
 
 ```ts

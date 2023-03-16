@@ -45,7 +45,7 @@ export function assertSchema(
             settings.required = true;
         }
 
-        const files = [resolve(BASE + group + "/main.ts")];
+        const files = [BASE + group + "/main.ts"];
         const actual = TJS.generateSchema(TJS.getProgramFromFiles(files, compilerOptions), type, settings, files);
 
         // writeFileSync(BASE + group + "/schema.json", stringify(actual, {space: 4}) + "\n\n");
@@ -492,4 +492,8 @@ describe("when reusing a generator", () => {
       assert.deepEqual(actualSchemaObject, expectedSchemaObject, `The schema for ${symbolName} is not as expected`);
     });
   });
+});
+
+describe("satisfies keyword - ignore from a \"satisfies\" and build by rally type", () => {
+    assertSchema("satisfies-keyword", "Specific");
 });
