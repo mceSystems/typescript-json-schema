@@ -1,5 +1,5 @@
 {
-  "name": "typescript-json-schema",
+  "name": "@mcesystems/typescript-json-schema",
   "version": "0.55.0",
   "description": "typescript-json-schema generates JSON Schema files from your Typescript sources",
   "main": "dist/typescript-json-schema.js",
